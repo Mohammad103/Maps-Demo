@@ -9,5 +9,6 @@ target 'Maps Demo' do
     pod 'GoogleMaps'
     pod 'GooglePlaces'
     pod 'JVFloatLabeledTextField'
+    pod 'NitroUIColorCategories'
 
 end

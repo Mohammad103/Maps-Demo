@@ -195,10 +195,14 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Maps Demo/Pods-Maps Demo-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/JVFloatLabeledTextField/JVFloatLabeledTextField.framework",
+				"${BUILT_PRODUCTS_DIR}/NitroNSDictionaryCategories/NitroNSDictionaryCategories.framework",
+				"${BUILT_PRODUCTS_DIR}/NitroUIColorCategories/NitroUIColorCategories.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JVFloatLabeledTextField.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NitroNSDictionaryCategories.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NitroUIColorCategories.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

@@ -7,17 +7,26 @@ PODS:
   - GooglePlaces (2.5.0):
     - GoogleMaps/Base (= 2.5.0)
   - JVFloatLabeledTextField (1.2.1)
+  - NitroMath (1.1.0)
+  - NitroNSDictionaryCategories (1.1.0)
+  - NitroUIColorCategories (1.1.1):
+    - NitroMath (~> 1.1.0)
+    - NitroNSDictionaryCategories (~> 1.1.0)
 
 DEPENDENCIES:
   - GoogleMaps
   - GooglePlaces
   - JVFloatLabeledTextField
+  - NitroUIColorCategories
 
 SPEC CHECKSUMS:
   GoogleMaps: c087b8e5dfe87ca6ebf59adb9b4894a4146bec4f
   GooglePlaces: dd70d9d71ea1c7944846afe67de3712c99b30a77
   JVFloatLabeledTextField: cfc44e3c4d493b2ed92ede8035e8e89c2912ba64
+  NitroMath: 9402e21acb9687ce46cb48ceb9a5fa86d40aaee2
+  NitroNSDictionaryCategories: 8d86cbfbcb7b6b2d69071314330ac11283137ae9
+  NitroUIColorCategories: f6d844ac23380050f1d402c518681da8da959191
 
-PODFILE CHECKSUM: 06cdaf4db7aec6969ce9c3103f850c92ad585de0
+PODFILE CHECKSUM: 83b7a4242cbbb990fab42f319a912d94ed59da63
 
 COCOAPODS: 1.3.1

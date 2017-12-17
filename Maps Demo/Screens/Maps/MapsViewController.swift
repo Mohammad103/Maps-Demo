@@ -9,6 +9,7 @@
 import UIKit
 import GoogleMaps
 import GooglePlaces
+import NitroUIColorCategories
 
 
 enum LocationType {
@@ -83,11 +84,69 @@ class MapsViewController: UIViewController {
     }
     
     
+    func showPath(polyStr: String)
+    {
+        let path = GMSPath(fromEncodedPath: polyStr)
+        let polyline = GMSPolyline(path: path)
+        polyline.strokeColor = UIColor(fromARGBHexString: "40A085")
+        polyline.strokeWidth = 2.0
+        polyline.map = mapView
+        
+        let mapBounds = GMSCoordinateBounds(path: path!)
+        let cameraUpdate = GMSCameraUpdate.fit(mapBounds)
+        mapView.animate(with: cameraUpdate)
+    }
+    
+    
+    // Request to get path points to draw route between 2 locations
+    func getPolylineRoute(from source: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D)
+    {
+        let config = URLSessionConfiguration.default
+        let session = URLSession(configuration: config)
+        
+        let url = URL(string: "http://maps.googleapis.com/maps/api/directions/json?origin=\(source.latitude),\(source.longitude)&destination=\(destination.latitude),\(destination.longitude)&sensor=false&mode=driving")!
+        
+        let task = session.dataTask(with: url, completionHandler: {
+            (data, response, error) in
+            if error != nil {
+                print(error!.localizedDescription)
+            }else{
+                do {
+                    if let json : [String:Any] = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as? [String: Any]{
+                        
+                        let routes = json["routes"] as? [Any]
+                        let routersFirstObj = routes?[0] as? [String:Any]
+                        let overviewPolyline = routersFirstObj?["overview_polyline"] as? [String:Any]
+                        let polyString = overviewPolyline?["points"] as? String
+                        
+                        //Call this method to draw path on map
+                        DispatchQueue.main.async() {
+                            self.showPath(polyStr: polyString!)
+                        }
+                    }
+                    
+                }catch{
+                    print("error in JSONSerialization")
+                }
+            }
+        })
+        task.resume()
+    }
+    
+    
     func drawRoute()
     {
-        
+        if (sourcePlace == nil || destinationPlace == nil) {
+            return
+        }
+        getPolylineRoute(from: (sourcePlace?.coordinate)!, to: (destinationPlace?.coordinate)!)
     }
 }
+
+
+// =====================================================================
+// ====================== Auto Complete Search =========================
+// =====================================================================
 
 
 extension MapsViewController: GMSAutocompleteViewControllerDelegate
@@ -135,12 +194,17 @@ extension MapsViewController: GMSAutocompleteViewControllerDelegate
 }
 
 
+// =====================================================================
+// ====================== Update User Location =========================
+// =====================================================================
+
+
 extension MapsViewController: CLLocationManagerDelegate
 {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation])
     {
         let location = locations.last
-        let camera = GMSCameraPosition.camera(withLatitude: (location?.coordinate.latitude)!, longitude: (location?.coordinate.longitude)!, zoom: 17.0)
+        let camera = GMSCameraPosition.camera(withLatitude: (location?.coordinate.latitude)!, longitude: (location?.coordinate.longitude)!, zoom: 8.0)
         self.mapView?.animate(to: camera)
         self.locationManager.stopUpdatingLocation()
     }
