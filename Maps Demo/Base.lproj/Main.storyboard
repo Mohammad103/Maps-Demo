@@ -111,6 +111,9 @@
                     <navigationItem key="navigationItem" title="Home" id="THT-iX-D1B">
                         <barButtonItem key="backBarButtonItem" title=" " id="ZzU-Vy-Tdm"/>
                     </navigationItem>
+                    <connections>
+                        <outlet property="mapView" destination="gL6-e5-yuD" id="kqG-OZ-rzL"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

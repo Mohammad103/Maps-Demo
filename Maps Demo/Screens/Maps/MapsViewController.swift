@@ -7,31 +7,51 @@
 //
 
 import UIKit
+import GoogleMaps
 
 class MapsViewController: UIViewController {
 
-    override func viewDidLoad() {
+    @IBOutlet weak var mapView: GMSMapView!
+    var locationManager = CLLocationManager()
+    
+    
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
 
+        self.setNavigationBarStyles()
+        self.initMapView()
+    }
+    
+    
+    func setNavigationBarStyles()
+    {
         self.navigationController?.navigationBar.isTranslucent = false
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    
+    func initMapView()
+    {
+        mapView.camera = GMSCameraPosition.camera(withLatitude: 30.0444, longitude: 31.2357, zoom: 8.0)
+        mapView.isMyLocationEnabled = true
+        mapView.settings.myLocationButton = true
+        
+        locationManager.delegate = self
+        locationManager.startUpdatingLocation()
     }
-    */
 
+}
+
+
+extension MapsViewController: CLLocationManagerDelegate
+{
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation])
+    {
+        let location = locations.last
+        let camera = GMSCameraPosition.camera(withLatitude: (location?.coordinate.latitude)!, longitude: (location?.coordinate.longitude)!, zoom: 17.0)
+        self.mapView?.animate(to: camera)
+        self.locationManager.stopUpdatingLocation()
+    }
 }
