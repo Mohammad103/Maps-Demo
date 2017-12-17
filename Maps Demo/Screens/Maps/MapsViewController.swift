@@ -8,10 +8,26 @@
 
 import UIKit
 import GoogleMaps
+import GooglePlaces
+
+
+enum LocationType {
+    case None
+    case Source
+    case Destination
+}
+
 
 class MapsViewController: UIViewController {
 
     @IBOutlet weak var mapView: GMSMapView!
+    @IBOutlet weak var sourceTextField: UITextField!
+    @IBOutlet weak var destinationTextField: UITextField!
+
+    var sourcePlace: GMSPlace?
+    var destinationPlace: GMSPlace?
+    var selectedLocationType: LocationType = .None
+    
     var locationManager = CLLocationManager()
     
     
@@ -21,12 +37,14 @@ class MapsViewController: UIViewController {
 
         self.setNavigationBarStyles()
         self.initMapView()
+        
+        sourceTextField.addTarget(self, action: #selector(sourceTextFieldActive), for: .editingDidBegin)
+        destinationTextField.addTarget(self, action: #selector(destinationTextFieldActive), for: .editingDidBegin)
     }
     
     
     func setNavigationBarStyles()
     {
-        self.navigationController?.navigationBar.isTranslucent = false
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
     }
@@ -42,6 +60,78 @@ class MapsViewController: UIViewController {
         locationManager.startUpdatingLocation()
     }
 
+    
+    func loadAutoSearchView()
+    {
+        let autocompleteController = GMSAutocompleteViewController()
+        autocompleteController.delegate = self
+        present(autocompleteController, animated: true, completion: nil)
+    }
+    
+    
+    @objc func sourceTextFieldActive()
+    {
+        selectedLocationType = .Source
+        loadAutoSearchView()
+    }
+    
+    
+    @objc func destinationTextFieldActive()
+    {
+        selectedLocationType = .Destination
+        loadAutoSearchView()
+    }
+    
+    
+    func drawRoute()
+    {
+        
+    }
+}
+
+
+extension MapsViewController: GMSAutocompleteViewControllerDelegate
+{
+    
+    // Handle the user's selection.
+    func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
+        switch selectedLocationType {
+        case .Source:
+            sourcePlace = place
+            sourceTextField.text = place.formattedAddress
+            break
+        case .Destination:
+            destinationPlace = place
+            destinationTextField.text = place.formattedAddress
+            break
+        case .None:
+            break
+        }
+        
+        dismiss(animated: true) {
+            self.drawRoute()
+        }
+    }
+    
+    func viewController(_ viewController: GMSAutocompleteViewController, didFailAutocompleteWithError error: Error) {
+        // TODO: handle the error.
+        print("Error: ", error.localizedDescription)
+    }
+    
+    // User canceled the operation.
+    func wasCancelled(_ viewController: GMSAutocompleteViewController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    // Turn the network activity indicator on and off again.
+    func didRequestAutocompletePredictions(_ viewController: GMSAutocompleteViewController) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+    }
+    
+    func didUpdateAutocompletePredictions(_ viewController: GMSAutocompleteViewController) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+    }
+    
 }
 
 
